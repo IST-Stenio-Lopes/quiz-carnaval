@@ -238,7 +238,7 @@ export default function Quiz() {
                   className={`flex items-center  p-8 h-30 bg-button-answer rounded-md shadow-elevationfour transition-opacity duration-300 ${
                     currentQuestion.options.some((option) => option.image)
                       ? "w-[280px] h-[280px]"
-                      : ""
+                      : "grid-cols-1"
                   } ${
                     isSelected
                       ? "border-4 border-yellow-400"
@@ -255,7 +255,7 @@ export default function Quiz() {
                     className="text-white text-3xl w-full"
                   >
                     {option.image ? (
-                      <div className="flex flex-col justify-center items-center gap-2 ">
+                      <div className="flex flex-col justify-center items-center gap-4 ">
                         <Image
                           src={option.image}
                           alt={option.text}
