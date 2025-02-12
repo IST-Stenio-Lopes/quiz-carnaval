@@ -17,6 +17,8 @@ export default {
           "linear-gradient(to bottom, #14BE85 40%, #09583E 120%)",
         "button-react":
           "linear-gradient(135deg, #14C187 0%, #1B55AA 19%, #FA068A 51%, #F1F101 110%)",
+        "button-grayramp":
+          "linear-gradient(135deg, #424E4A 0%, #868D96 19%, #5C595B 51%, #FFFFF8 110%)",
       },
       colors: {
         pink: "#FA068A",
