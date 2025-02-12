@@ -13,6 +13,15 @@ export default function Page() {
     router.push("/quiz");
   }
 
+  function enterFullScreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch((err) => {
+        console.error(`Erro ao entrar em tela cheia: ${err.message}`);
+      });
+    }
+    setShowPreparationScreen(true);
+  }
+
   if (!showPreparationScreen) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-carnaval-bg bg-cover bg-center p-24 w-full">
@@ -26,7 +35,7 @@ export default function Page() {
           />
           <div className="flex  flex-col h-40 gap-8">
             <Button
-              onClick={() => setShowPreparationScreen(true)}
+              onClick={enterFullScreen}
               className="text-white text-3xl shadow-elevationfour p-8 bg-button-react"
             >
               Bora começar a festa?
@@ -57,7 +66,7 @@ export default function Page() {
       </div>
       <div className="bg-zinc-100 p-12 flex flex-col gap-8 rounded-b-3xl w-full items-center">
         <p className="text-2xl font-normal text-zinc-800 text-center">
-          Vamos testar seus conhecimentos carnvalescos? <br /> Os Jacarés
+          Vamos testar seus conhecimentos carnavalescos? <br /> Os Jacarés
           Foliantes te acompanharão neste game!
         </p>
         <Image
