@@ -22,7 +22,7 @@ export const AudioPlayer = ({ src, loop = true, onEnd }: AudioPlayerProps) => {
 
       const fadeInInterval = setInterval(() => {
         if (audio.volume < 1) {
-          audio.volume += 0.05;
+          audio.volume = Math.min(audio.volume + 0.05, 1);
         } else {
           clearInterval(fadeInInterval);
         }
@@ -35,9 +35,13 @@ export const AudioPlayer = ({ src, loop = true, onEnd }: AudioPlayerProps) => {
   }, [src, loop]);
 
   useEffect(() => {
+    const audioElement = audioRef.current;
+    if (audioElement) {
+      audioElement.play();
+    }
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
+      if (audioElement) {
+        audioElement.pause();
       }
     };
   }, []);

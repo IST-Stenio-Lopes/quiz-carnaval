@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "../components/ui/button";
 import { useRouter } from "next/navigation";
-import { Maximize, Minimize } from "lucide-react";
+import { Maximize } from "lucide-react";
 import confetti from "canvas-confetti";
 
 export default function Page() {
@@ -13,30 +13,8 @@ export default function Page() {
   const [confettiIntervalId, setConfettiIntervalId] =
     useState<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    const intervalId = showConfetti();
-    setConfettiIntervalId(intervalId);
-
-    return () => {
-      if (confettiIntervalId) {
-        clearInterval(confettiIntervalId);
-      }
-    };
-  }, []);
-
-  function handleStartQuiz() {
-    stopConfetti();
-    router.push("/quiz");
-  }
-
-  function goFullscreen() {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    }
-  }
-
   function showConfetti() {
-    const duration = 5 * 1000;
+    const duration = 2 * 1000;
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
     const randomInRange = (min: number, max: number) =>
@@ -64,15 +42,49 @@ export default function Page() {
           origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
         });
       }, 250);
-    }, duration); // Repete a cada 5 segundos
+    }, duration);
 
-    return interval; // Retorna o ID do intervalo para poder limpá-lo depois
+    return interval;
   }
+
+  useEffect(() => {
+    if (!showPreparationScreen) {
+      const intervalId = showConfetti();
+      setConfettiIntervalId(intervalId);
+    }
+
+    return () => {
+      if (confettiIntervalId) {
+        clearInterval(confettiIntervalId);
+        setConfettiIntervalId(null);
+      }
+    };
+  }, [showPreparationScreen]);
 
   function stopConfetti() {
     if (confettiIntervalId) {
       clearInterval(confettiIntervalId);
       setConfettiIntervalId(null);
+    }
+  }
+
+  function handlePreparationScreen() {
+    stopConfetti();
+    setShowPreparationScreen(true);
+  }
+
+  function backStart() {
+    setShowPreparationScreen(false);
+  }
+
+  function handleStartQuiz() {
+    stopConfetti();
+    router.push("/quiz");
+  }
+
+  function goFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
     }
   }
 
@@ -105,7 +117,7 @@ export default function Page() {
           />
           <div className="flex  flex-col h-40 gap-12 items-center">
             <Button
-              onClick={() => setShowPreparationScreen(true)}
+              onClick={handlePreparationScreen}
               className="text-white text-3xl shadow-elevationfour p-8 bg-button-react animate-tada"
             >
               Bora começar a festa?
@@ -115,6 +127,8 @@ export default function Page() {
       </div>
     );
   }
+
+  console.log("Você ta na tela de começar ?", showPreparationScreen);
 
   return (
     <div className="flex flex-col items-center  min-h-screen bg-carnaval-bg bg-cover bg-center w-full p-12">
@@ -144,7 +158,7 @@ export default function Page() {
         />
         <div className="flex flex-row gap-2">
           <Button
-            onClick={() => setShowPreparationScreen(false)}
+            onClick={backStart}
             className="text-white text-3xl shadow-elevationfour p-8 bg-button-grayramp flex items-center gap-2 "
           >
             Agora não

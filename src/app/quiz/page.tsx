@@ -24,7 +24,6 @@ export default function Quiz() {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
-  const confettiRef = useRef(null);
   const [showCorrectMessage, setShowCorrectMessage] = useState(false);
   const [feedbackType, setFeedbackType] = useState<string | null>(null);
   const [quizFinished, setQuizFinished] = useState(false);
@@ -56,7 +55,23 @@ export default function Quiz() {
   }
 
   function stopAudio() {
-    setAudioSrc(null);
+    const audioElement = document.querySelector("audio");
+    if (audioElement) {
+      const fadeOut = (audio: HTMLAudioElement, duration: number) => {
+        const fadeOutInterval = setInterval(() => {
+          if (audio.volume > 0) {
+            audio.volume = Math.max(audio.volume - 0.05, 0);
+          } else {
+            clearInterval(fadeOutInterval);
+            audio.pause();
+            audio.currentTime = 0;
+            setAudioSrc(null);
+          }
+        }, duration / 20);
+      };
+
+      fadeOut(audioElement, 2000);
+    }
   }
 
   function handleNextQuestion() {
