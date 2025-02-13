@@ -15,6 +15,7 @@ import { Progress } from "@/src/components/ui/progress";
 import { Label } from "@/src/components/ui/label";
 import { feedbackMessages } from "@/src/data/feedbackMessage";
 import { useRouter } from "next/navigation";
+import { AudioPlayer } from "@/src/components/audio-player";
 
 const poetsen = Poetsen_One({ subsets: ["latin"], weight: "400" });
 
@@ -30,6 +31,7 @@ export default function Quiz() {
   const [customErrorMessage, setCustomErrorMessage] = useState<string | null>(
     null
   );
+  const [audioSrc, setAudioSrc] = useState<string | null>(null);
 
   const [correctCount, setCorrectCount] = useState(0);
   const [wrongCount, setWrongCount] = useState(0);
@@ -38,7 +40,21 @@ export default function Quiz() {
   const [showHalfwayMessage, setShowHalfwayMessage] = useState(false);
 
   function handleAnswerChange(answer: string) {
-    setSelectedAnswer(answer);
+    const selectedOption = currentQuestion.options.find(
+      (option) => option.text === answer
+    );
+
+    if (selectedOption) {
+      setSelectedAnswer(answer);
+
+      if ("audio" in selectedOption) {
+        setAudioSrc(selectedOption.audio);
+      }
+    }
+  }
+
+  function stopAudio() {
+    setAudioSrc(null);
   }
 
   function handleNextQuestion() {
@@ -124,6 +140,7 @@ export default function Quiz() {
   }
 
   function goToNextQuestion() {
+    stopAudio();
     setShowCorrectMessage(false);
     setAnswers((prevAnswers) => [...prevAnswers, selectedAnswer || ""]);
     setSelectedAnswer(null);
@@ -237,11 +254,11 @@ export default function Quiz() {
       <div className="flex flex-col gap-8 py-12 items-center">
         <RadioGroup
           value={selectedAnswer || ""}
-          onValueChange={handleAnswerChange}
+          onValueChange={(value) => handleAnswerChange(value)}
         >
           <div
             className={`grid  gap-4 ${
-              currentQuestion.options.some((option) => option.image)
+              currentQuestion.options.some((option) => "image" in option)
                 ? "grid-cols-4"
                 : "grid-cols-2 w-screen px-28"
             }`}
@@ -252,7 +269,7 @@ export default function Quiz() {
                 <div
                   key={optionIndex}
                   className={`flex items-center px-8 h-28 bg-button-answer rounded-md shadow-elevationfour transition-opacity duration-300 ${
-                    currentQuestion.options.some((option) => option.image)
+                    currentQuestion.options.some((option) => "image" in option)
                       ? "w-[280px] h-[260px]"
                       : "grid-cols-1"
                   } ${isSelected ? "border-4 border-yellow-400" : ""}`}
@@ -266,10 +283,10 @@ export default function Quiz() {
                     htmlFor={`q${currentQuestion.id}-option${optionIndex}`}
                     className="text-white text-3xl w-full"
                   >
-                    {option.image ? (
+                    {"image" in option ? (
                       <div className="flex flex-col justify-center items-center gap-4">
                         <Image
-                          src={option.image}
+                          src={option.image || ""}
                           alt={option.text}
                           width={150}
                           height={150}
@@ -280,7 +297,18 @@ export default function Quiz() {
                         </span>
                       </div>
                     ) : (
-                      option.text
+                      <div className="flex items-center gap-4">
+                        {"audio" in option && (
+                          <Image
+                            src="/audioindicator.svg"
+                            alt="Áudio"
+                            width={36}
+                            height={24}
+                            className="object-cover"
+                          />
+                        )}
+                        <span>{option.text}</span>
+                      </div>
                     )}
                   </Label>
                 </div>
@@ -289,6 +317,8 @@ export default function Quiz() {
           </div>
         </RadioGroup>
       </div>
+
+      {audioSrc && <AudioPlayer src={audioSrc} />}
 
       <div className="flex justify-center">
         <Button
