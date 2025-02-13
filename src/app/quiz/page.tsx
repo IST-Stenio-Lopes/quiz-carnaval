@@ -27,6 +27,9 @@ export default function Quiz() {
   const [showCorrectMessage, setShowCorrectMessage] = useState(false);
   const [feedbackType, setFeedbackType] = useState<string | null>(null);
   const [quizFinished, setQuizFinished] = useState(false);
+  const [customErrorMessage, setCustomErrorMessage] = useState<string | null>(
+    null
+  );
 
   const [correctCount, setCorrectCount] = useState(0);
   const [wrongCount, setWrongCount] = useState(0);
@@ -39,8 +42,6 @@ export default function Quiz() {
   }
 
   function handleNextQuestion() {
-    const currentQuestion = questions[currentQuestionIndex];
-
     if (selectedAnswer === currentQuestion.answer) {
       setCorrectCount((prev) => prev + 1);
       setFeedbackType(`acerto${Math.min(correctCount + 1, 3)}`);
@@ -50,6 +51,7 @@ export default function Quiz() {
       setWrongCount((prev) => prev + 1);
       setFeedbackType(`erro${Math.min(wrongCount + 1, 3)}`);
       setShowCorrectMessage(true);
+      setCustomErrorMessage(`${currentQuestion.answer}`);
     }
   }
 
@@ -164,32 +166,43 @@ export default function Quiz() {
     const { image, message } = getResultData();
 
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-carnaval-bg bg-cover bg-center p-24">
-        <div className="bg-zinc-300 p-12 flex flex-col gap-4 rounded-t-3xl justify-center items-center w-full">
-          <h3 className="text-4xl text-bold text-zinc-800">
-            {correctCount}/{totalAnswered}
+      <div className="flex flex-row justify-center items-stretch min-h-screen bg-carnaval-bg bg-cover bg-center p-14 py-28">
+        <div className="bg-zinc-100 p-12 flex flex-col rounded-l-3xl justify-center items-center w-full shadow-custom">
+          <h3 className="text-4xl text-bold text-zinc-800 text-center">
+            <b>
+              {correctCount}/{totalAnswered}
+            </b>
+            <br />
+            acertos
           </h3>
-          <p className="text-4xl font-normal text-zinc-800">acertos</p>
+
           <Image
             src={image}
             alt="Resultado"
-            width={400}
-            height={400}
-            className="mb-6"
+            width={250}
+            height={250}
+            className="my-6"
           />
           <h1
-            className={` text-zinc-800 text-4xl font-bold text-center mb-6`}
+            className={` text-zinc-800 text-2xl font-bold text-center pt-4`}
             dangerouslySetInnerHTML={{ __html: message }}
           />
         </div>
-        <div className="bg-zinc-100 p-12 flex flex-col gap-8 rounded-b-3xl w-full">
-          <h3 className="text-4xl text-bold text-zinc-800">
-            Fim do SABER FOLIA
-          </h3>
-          <p className="text-4xl font-normal text-zinc-800">
+        <div className="bg-zinc-300 p-12 flex flex-col gap-8 rounded-r-3xl justify-center w-full">
+          <div className="flex flex-row items-center gap-4">
+            <h3 className="text-3xl text-bold text-zinc-800">Fim do</h3>
+            <Image
+              src="/logoblack.svg"
+              alt="Fim do saberfolia"
+              width={250}
+              height={250}
+            />
+          </div>
+
+          <p className="text-3xl font-normal text-zinc-800">
             Curtiu o quiz? Agora é só cair na folia e espalhar a alegria!
           </p>
-          <div className="flex flex-row gap-4">
+          <div className="flex flex-row gap-4 pt-8">
             <Button
               onClick={() => router.push("/")}
               className="text-white text-3xl shadow-elevationfour p-8 bg-button-grayramp flex items-center gap-2"
@@ -211,23 +224,26 @@ export default function Quiz() {
   const currentQuestion = questions[currentQuestionIndex];
   return (
     <div className="flex flex-col min-h-screen w-full bg-carnaval-bg bg-cover bg-center ">
-      <div className="flex gap-8 flex-col p-14 bg-blue rounded-b-3xl shadow-custom">
-        <Progress value={(currentQuestionIndex / questions.length) * 100} />
+      <div className="flex gap-8 flex-col py-20 px-40  bg-blue rounded-b-[120px] shadow-custom">
+        <Progress
+          value={(currentQuestionIndex / questions.length) * 100}
+          className="h-5"
+        />
         <h1 className="text-5xl font-bold text-center text-white ">
           {currentQuestion.question}
         </h1>
       </div>
 
-      <div className="flex flex-col gap-8 pt-14 px-28">
+      <div className="flex flex-col gap-8 py-12 items-center">
         <RadioGroup
           value={selectedAnswer || ""}
           onValueChange={handleAnswerChange}
         >
           <div
-            className={`grid gap-8 ${
+            className={`grid  gap-4 ${
               currentQuestion.options.some((option) => option.image)
-                ? "grid-cols-2"
-                : "grid-cols-1"
+                ? "grid-cols-4"
+                : "grid-cols-2 w-screen px-28"
             }`}
           >
             {currentQuestion.options.map((option, optionIndex) => {
@@ -235,15 +251,11 @@ export default function Quiz() {
               return (
                 <div
                   key={optionIndex}
-                  className={`flex items-center  p-8 h-30 bg-button-answer rounded-md shadow-elevationfour transition-opacity duration-300 ${
+                  className={`flex items-center px-8 h-28 bg-button-answer rounded-md shadow-elevationfour transition-opacity duration-300 ${
                     currentQuestion.options.some((option) => option.image)
-                      ? "w-[280px] h-[280px]"
+                      ? "w-[280px] h-[260px]"
                       : "grid-cols-1"
-                  } ${
-                    isSelected
-                      ? "border-4 border-yellow-400"
-                      : "border-4 border-transparent"
-                  }`}
+                  } ${isSelected ? "border-4 border-yellow-400" : ""}`}
                 >
                   <RadioGroupItem
                     value={option.text}
@@ -255,13 +267,13 @@ export default function Quiz() {
                     className="text-white text-3xl w-full"
                   >
                     {option.image ? (
-                      <div className="flex flex-col justify-center items-center gap-4 ">
+                      <div className="flex flex-col justify-center items-center gap-4">
                         <Image
                           src={option.image}
                           alt={option.text}
-                          width={100}
-                          height={100}
-                          className="w-24 h-24 object-cover"
+                          width={150}
+                          height={150}
+                          className="object-cover"
                         />
                         <span className="text-center text-2xl">
                           {option.text}
@@ -278,11 +290,11 @@ export default function Quiz() {
         </RadioGroup>
       </div>
 
-      <div className="p-14 flex justify-center">
+      <div className="flex justify-center">
         <Button
           onClick={handleNextQuestion}
           disabled={!selectedAnswer}
-          className="text-white text-3xl shadow-elevationfour p-8 bg-button-react"
+          className="text-white text-2xl shadow-elevationfour p-8 bg-button-react font-bold "
         >
           {" "}
           Avançar
@@ -291,16 +303,31 @@ export default function Quiz() {
       </div>
 
       {(showCorrectMessage || showHalfwayMessage) && feedbackType && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-60 backdrop-blur-md transition-opacity duration-500">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-feedback backdrop-blur-md transition-opacity duration-500 ">
+          {feedbackType.startsWith("erro") && customErrorMessage && (
+            <div className="flex flex-col ">
+              <h2
+                className={`${poetsen.className} text-white text-3xl font-bold text-center mb-6`}
+              >
+                A resposta correta é: <br />{" "}
+                <span
+                  className={`${poetsen.className}  text-3xl font-bold text-center text-yellow-400`}
+                >
+                  {customErrorMessage}
+                </span>
+              </h2>
+            </div>
+          )}
+
           <Image
             src={feedbackMessages[feedbackType].image}
             alt="Feedback"
-            width={400}
-            height={400}
+            width={300}
+            height={300}
             className="mb-4"
           />
           <h2
-            className={`${poetsen.className} text-white text-4xl font-bold text-center mb-6`}
+            className={`${poetsen.className} text-white text-3xl font-bold text-center mb-6`}
             dangerouslySetInnerHTML={{
               __html: feedbackMessages[feedbackType].message,
             }}
