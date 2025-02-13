@@ -289,10 +289,10 @@ export default function Quiz() {
               return (
                 <div
                   key={optionIndex}
-                  className={`flex items-center px-8 h-28 bg-button-answer rounded-md shadow-elevationfour transition-opacity duration-300 ${
+                  className={`flex items-center px-10  bg-button-answer rounded-md shadow-elevationfour transition-opacity duration-300 ${
                     currentQuestion.options.some((option) => "image" in option)
-                      ? "w-[280px] h-[260px]"
-                      : "grid-cols-1"
+                      ? "w-[280px] h-[280px]"
+                      : "grid-cols-1 h-28"
                   } ${isSelected ? "border-4 border-yellow-400" : ""}`}
                 >
                   <RadioGroupItem

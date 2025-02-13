@@ -58,7 +58,7 @@ export const questions: {
       { text: "Um tipo de dança" },
       { text: "Grupo de fantasiados" },
       {
-        text: "Desfiles de carros ornamentados com foliões fantasiados",
+        text: "Desfiles de carros ornamentados com foliões",
       },
     ],
     answer: "Desfiles de carros ornamentados com foliões fantasiados",
