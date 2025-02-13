@@ -19,6 +19,8 @@ export default {
           "linear-gradient(135deg, #14C187 0%, #1B55AA 19%, #FA068A 51%, #F1F101 110%)",
         "button-grayramp":
           "linear-gradient(135deg, #424E4A 0%, #868D96 19%, #5C595B 51%, #FFFFF8 110%)",
+
+        feedback: "linear-gradient(to bottom, #16102BB3 20%, #4A3691B3 120%)",
       },
       colors: {
         pink: "#FA068A",
@@ -73,6 +75,7 @@ export default {
       boxShadow: {
         custom: "0px 20px 20px 0px rgba(5, 13, 29, 0.2)",
         elevationfour: "0px 10px 15px 0px rgba(5, 13, 29, 0.1)",
+        elevationcard: "10px 0px 20px 0px rgba(5, 13, 29, 0.8)",
       },
     },
   },
