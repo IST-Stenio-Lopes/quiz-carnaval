@@ -35,6 +35,8 @@ export default function Quiz() {
 
   const [correctCount, setCorrectCount] = useState(0);
   const [wrongCount, setWrongCount] = useState(0);
+  const [correctAudioSrc, setCorrectAudioSrc] = useState<string | null>(null);
+  const [wrongAudioSrc, setWrongAudioSrc] = useState<string | null>(null);
 
   const [totalAnswered, setTotalAnswered] = useState(0);
   const [showHalfwayMessage, setShowHalfwayMessage] = useState(false);
@@ -62,11 +64,13 @@ export default function Quiz() {
       setCorrectCount((prev) => prev + 1);
       setFeedbackType(`acerto${Math.min(correctCount + 1, 3)}`);
       setShowCorrectMessage(true);
+      setCorrectAudioSrc("/audios/certa.mp3");
       confettiEffect();
     } else {
       setWrongCount((prev) => prev + 1);
       setFeedbackType(`erro${Math.min(wrongCount + 1, 3)}`);
       setShowCorrectMessage(true);
+      setWrongAudioSrc("/audios/errada.mp3");
       setCustomErrorMessage(`${currentQuestion.answer}`);
     }
   }
@@ -141,6 +145,8 @@ export default function Quiz() {
 
   function goToNextQuestion() {
     stopAudio();
+    setCorrectAudioSrc(null);
+    setWrongAudioSrc(null);
     setShowCorrectMessage(false);
     setAnswers((prevAnswers) => [...prevAnswers, selectedAnswer || ""]);
     setSelectedAnswer(null);
@@ -319,6 +325,8 @@ export default function Quiz() {
       </div>
 
       {audioSrc && <AudioPlayer src={audioSrc} />}
+      {correctAudioSrc && <AudioPlayer src={correctAudioSrc} loop={false} />}
+      {wrongAudioSrc && <AudioPlayer src={wrongAudioSrc} loop={false} />}
 
       <div className="flex justify-center">
         <Button
