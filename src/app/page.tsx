@@ -1,21 +1,90 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "../components/ui/button";
 import { useRouter } from "next/navigation";
+import { Maximize, Minimize } from "lucide-react";
+import confetti from "canvas-confetti";
 
 export default function Page() {
   const router = useRouter();
   const [showPreparationScreen, setShowPreparationScreen] = useState(false);
+  const [confettiIntervalId, setConfettiIntervalId] =
+    useState<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const intervalId = showConfetti();
+    setConfettiIntervalId(intervalId);
+
+    return () => {
+      if (confettiIntervalId) {
+        clearInterval(confettiIntervalId);
+      }
+    };
+  }, []);
 
   function handleStartQuiz() {
+    stopConfetti();
     router.push("/quiz");
+  }
+
+  function goFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    }
+  }
+
+  function showConfetti() {
+    const duration = 5 * 1000;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+    const randomInRange = (min: number, max: number) =>
+      Math.random() * (max - min) + min;
+
+    const interval = setInterval(() => {
+      const animationEnd = Date.now() + duration;
+
+      const confettiInterval = setInterval(() => {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+          return clearInterval(confettiInterval);
+        }
+
+        const particleCount = 50 * (timeLeft / duration);
+        confetti({
+          ...defaults,
+          particleCount,
+          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+        });
+        confetti({
+          ...defaults,
+          particleCount,
+          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+        });
+      }, 250);
+    }, duration); // Repete a cada 5 segundos
+
+    return interval; // Retorna o ID do intervalo para poder limpá-lo depois
+  }
+
+  function stopConfetti() {
+    if (confettiIntervalId) {
+      clearInterval(confettiIntervalId);
+      setConfettiIntervalId(null);
+    }
   }
 
   if (!showPreparationScreen) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-carnaval-bg bg-cover bg-center p-24 w-full">
+        <Button
+          onClick={goFullscreen}
+          className="absolute top-6 right-6 bg-black bg-opacity-50 text-white p-3 rounded-full shadow-md hover:bg-opacity-70 transition z-10"
+        >
+          <Maximize size={32} strokeWidth={3} />
+        </Button>
         <div
           className="absolute inset-0 flex flex-col items-center gap-24
          bg-black bg-opacity-60 backdrop-blur-md transition-opacity duration-500 pt-16"
@@ -32,12 +101,12 @@ export default function Page() {
             alt="Logo"
             width={500}
             height={500}
-            className=""
+            className="animate-shake"
           />
           <div className="flex  flex-col h-40 gap-12 items-center">
             <Button
               onClick={() => setShowPreparationScreen(true)}
-              className="text-white text-3xl shadow-elevationfour p-8 bg-button-react"
+              className="text-white text-3xl shadow-elevationfour p-8 bg-button-react animate-tada"
             >
               Bora começar a festa?
             </Button>
@@ -73,12 +142,20 @@ export default function Page() {
           height={400}
           className="mb-6"
         />
-        <Button
-          onClick={handleStartQuiz}
-          className="text-white text-3xl shadow-elevationfour p-8 bg-button-react flex items-center gap-2"
-        >
-          Iniciar
-        </Button>
+        <div className="flex flex-row gap-2">
+          <Button
+            onClick={() => setShowPreparationScreen(false)}
+            className="text-white text-3xl shadow-elevationfour p-8 bg-button-grayramp flex items-center gap-2 "
+          >
+            Agora não
+          </Button>
+          <Button
+            onClick={handleStartQuiz}
+            className="text-white text-3xl shadow-elevationfour p-8 bg-button-react flex items-center gap-2"
+          >
+            Iniciar
+          </Button>
+        </div>
       </div>
     </div>
   );

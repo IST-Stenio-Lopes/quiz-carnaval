@@ -1,12 +1,19 @@
-export const questions = [
+import { Option } from "../entities/questions";
+
+export const questions: {
+  id: number;
+  question: string;
+  options: Option[];
+  answer: string;
+}[] = [
   {
     id: 1,
     question: "Qual a primeira marchinha de carnaval?",
     options: [
-      { text: "Sassaricando" },
-      { text: "Mamãe eu quero" },
-      { text: "Allah-lá-ô" },
-      { text: "Ô abre alas" },
+      { text: "Sassaricando", audio: "/audios/sassaricando.mp3" },
+      { text: "Mamãe eu quero", audio: "/audios/mamae_eu_quero.mp3" },
+      { text: "Allah-lá-ô", audio: "/audios/allah_la_o.mp3" },
+      { text: "Ô abre alas", audio: "/audios/o_abre_alas.mp3" },
     ],
     answer: "Ô abre alas",
   },
@@ -52,7 +59,6 @@ export const questions = [
       { text: "Grupo de fantasiados" },
       {
         text: "Desfiles de carros ornamentados com foliões fantasiados",
-        image: null,
       },
     ],
     answer: "Desfiles de carros ornamentados com foliões fantasiados",
@@ -89,10 +95,13 @@ export const questions = [
     id: 8,
     question: "Qual marchinha foi gravada por Moacyr Franco?",
     options: [
-      { text: "Saca-rolha" },
-      { text: "Cidade maravilhosa" },
-      { text: "Me dá um dinheiro aí" },
-      { text: "Turma do funil" },
+      { text: "Saca-rolha", audio: "/audios/saca_rolha.mp3" },
+      { text: "Cidade maravilhosa", audio: "/audios/cidade_maravilhosa.mp3" },
+      {
+        text: "Me dá um dinheiro aí",
+        audio: "/audios/me_da_um_dinheiro_ai.mp3",
+      },
+      { text: "Turma do funil", audio: "/audios/turma_do_funil.mp3" },
     ],
     answer: "Me dá um dinheiro aí",
   },
