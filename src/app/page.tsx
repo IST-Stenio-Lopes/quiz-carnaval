@@ -111,14 +111,14 @@ export default function Page() {
           <Image
             src="/logo.svg"
             alt="Logo"
-            width={500}
-            height={500}
-            className="animate-shake"
+            width={800}
+            height={800}
+            className="mt-40 animate-shake"
           />
-          <div className="flex  flex-col h-40 gap-12 items-center">
+          <div className="flex  flex-col h-40 gap-12 items-center pt-40">
             <Button
               onClick={handlePreparationScreen}
-              className="text-white text-3xl shadow-elevationfour p-8 bg-button-react animate-tada"
+              className="text-white text-5xl shadow-elevationfour p-12 bg-button-react animate-tada"
             >
               Bora começar a festa?
             </Button>
@@ -128,44 +128,43 @@ export default function Page() {
     );
   }
 
-  console.log("Você ta na tela de começar ?", showPreparationScreen);
 
   return (
-    <div className="flex flex-col items-center  min-h-screen bg-carnaval-bg bg-cover bg-center w-full p-12">
-      <div className="bg-zinc-200 p-6 flex flex-col gap-4 rounded-t-3xl justify-center items-center w-full shadow-elevationcard">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-carnaval-bg bg-cover bg-center w-full p-12">
+      <div className="bg-zinc-200 p-12 flex flex-col gap-4 rounded-t-3xl justify-center items-center w-full shadow-elevationcard">
         <Image
           src="/logoblack.svg"
-          alt="Resultado"
-          width={200}
-          height={200}
+          alt="Logo de preparação"
+          width={800}
+          height={800}
           className="mb-6"
         />
       </div>
-      <div className="bg-zinc-100 p-10 flex flex-col gap-4 rounded-b-3xl w-full items-center">
-        <p className="text-2xl font-normal text-zinc-800 text-center">
+      <div className="bg-zinc-100 p-24 flex flex-col gap-4 rounded-b-3xl w-full items-center">
+        <p className="text-4xl font-normal text-zinc-800 text-center">
           Vamos testar seus conhecimentos carnavalescos?
         </p>
-        <p className="text-2xl font-normal text-zinc-800 text-center">
+        <p className="text-4xl pb-8 font-normal text-zinc-800 text-center">
           {" "}
           Os <b>Jacarés Foliantes</b> te acompanharão neste game!
         </p>
         <Image
           src="/logoalt.svg"
           alt="Resultado"
-          width={400}
-          height={400}
-          className="mb-6"
+          width={800}
+          height={800}
+          
         />
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-4 pt-20 w-full ">
           <Button
             onClick={backStart}
-            className="text-white text-3xl shadow-elevationfour p-8 bg-button-grayramp flex items-center gap-2 "
+            className="flex-1 text-white text-4xl shadow-elevationfour p-8 bg-button-grayramp flex items-center gap-2 "
           >
             Agora não
           </Button>
           <Button
             onClick={handleStartQuiz}
-            className="text-white text-3xl shadow-elevationfour p-8 bg-button-react flex items-center gap-2"
+            className="flex-1 text-white text-4xl shadow-elevationfour p-8 bg-button-react flex items-center gap-2"
           >
             Iniciar
           </Button>

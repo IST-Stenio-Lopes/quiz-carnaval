@@ -22,8 +22,8 @@ export default function RootLayout({
         <Image
           src="/parceria.svg"
           alt="Parcerias"
-          width={300}
-          height={300}
+          width={500}
+          height={500}
           className="fixed bottom-8 left-1/2 -translate-x-1/2 opacity-50 -z-0"
         />
       </body>
