@@ -1,10 +1,10 @@
 "use client";
 
-import { ArrowRight, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowRight, Home, Maximize, RotateCcw } from "lucide-react";
 
 import confetti from "canvas-confetti";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Poetsen_One } from "next/font/google";
 import { questions } from "@/src/data/questions";
@@ -40,6 +40,11 @@ export default function Quiz() {
   const [totalAnswered, setTotalAnswered] = useState(0);
   const [showHalfwayMessage, setShowHalfwayMessage] = useState(false);
 
+  function playClickSound() {
+    const audio = new Audio("/effect/pop.mp3");
+    audio.play();
+  }
+
   function handleAnswerChange(answer: string) {
     const selectedOption = currentQuestion.options.find(
       (option) => option.text === answer
@@ -53,6 +58,18 @@ export default function Quiz() {
       }
     }
   }
+
+  useEffect(() => {
+    const disableRightClick = (event: MouseEvent) => {
+      event.preventDefault();
+    };
+  
+    document.addEventListener("contextmenu", disableRightClick);
+  
+    return () => {
+      document.removeEventListener("contextmenu", disableRightClick);
+    };
+  }, []);
 
   function stopAudio() {
     const audioElement = document.querySelector("audio");
@@ -204,7 +221,7 @@ export default function Quiz() {
     const { image, message } = getResultData();
 
     return (
-      <div className="flex flex-col justify-center items-stretch min-h-screen bg-carnaval-bg bg-cover bg-center w-full p-14 py-28">
+      <div className="flex flex-col justify-center items-stretch min-h-screen bg-carnaval-bg bg-cover bg-center w-full p-14 py-28">    
         <div className="bg-zinc-100 p-12 flex flex-col rounded-t-3xl justify-center items-center w-full shadow-custom">
           <h3 className="text-6xl text-bold text-zinc-800 text-center">
             <b>
@@ -242,13 +259,18 @@ export default function Quiz() {
           </p>
           <div className="flex flex-col gap-4 pt-8 w-full ">
             <Button
-              onClick={() => router.push("/")}
+              onClick={() => {
+                // playClickSound()
+                router.push("/")}
+              }
               className="flex-1 text-white text-5xl shadow-elevationfour p-12 bg-button-grayramp flex items-center gap-2"
             >
               Preciso descansar
             </Button>
             <Button
-              onClick={restartQuiz}
+              onClick={
+                // playClickSound()
+                restartQuiz}
               className="flex-1 text-white text-5xl shadow-elevationfour p-12 bg-button-react flex items-center gap-2"
             >
              Foliar de novo
@@ -262,12 +284,21 @@ export default function Quiz() {
   const currentQuestion = questions[currentQuestionIndex];
   return (
     <div className="flex flex-col min-h-screen w-full bg-carnaval-bg bg-cover bg-center ">
-      <div className="flex gap-8 flex-col py-20 px-40 bg-blue rounded-b-[120px] items-center shadow-custom">
+      <div className="absolute bottom-8 right-8 z-50">
+      <Button 
+        onClick={() => router.push("/")} 
+        className="flex items-center gap-4 bg-white text-black px-6 py-6 shadow-lg rounded-full hover:bg-gray-200 transition text-rose-500 bg-rose-900 text-3xl"
+      >
+        
+        Desistir do quiz
+      </Button>
+    </div>
+      <div className="flex gap-8 flex-col py-20 pt-28 px-40 bg-blue rounded-b-[120px] items-center shadow-custom">
         <Progress
           value={(currentQuestionIndex / questions.length) * 100}
           
         />
-        <h1 className="text-6xl font-bold text-center text-white pt-4">
+        <h1 className="text-6xl font-bold text-center text-white pt-4 whitespace-normal">
           {currentQuestion.question}
         </h1>
       </div>
@@ -287,8 +318,13 @@ export default function Quiz() {
             {currentQuestion.options.map((option, optionIndex) => {
               const isSelected = selectedAnswer === option.text;
               return (
+                <Label
+                    htmlFor={`q${currentQuestion.id}-option${optionIndex}`}
+                    className="text-white text-3xl w-full"
+                  >
                 <div
                   key={optionIndex}
+                  onClick={playClickSound}
                   className={`flex items-center p-12 bg-button-answer rounded-md shadow-elevationfour transition-opacity duration-300 ${
                     currentQuestion.options.some((option) => "image" in option)
                       ? "w-[440px] h-[440px]"
@@ -300,10 +336,7 @@ export default function Quiz() {
                     id={`q${currentQuestion.id}-option${optionIndex}`}
                     className="hidden"
                   />
-                  <Label
-                    htmlFor={`q${currentQuestion.id}-option${optionIndex}`}
-                    className="text-white text-3xl w-full"
-                  >
+                  
                     {"image" in option ? (
                       <div className="flex flex-col justify-center items-center gap-4">
                         <Image
@@ -331,8 +364,8 @@ export default function Quiz() {
                         <span className="text-5xl">{option.text}</span>
                       </div>
                     )}
-                  </Label>
                 </div>
+                  </Label>
               );
             })}
           </div>
@@ -345,7 +378,10 @@ export default function Quiz() {
 
       <div className="flex justify-center">
         <Button
-          onClick={handleNextQuestion}
+          onClick={
+            
+            handleNextQuestion}
+          
           disabled={!selectedAnswer}
           className="text-white text-5xl shadow-elevationfour p-12 bg-button-react font-bold "
         >

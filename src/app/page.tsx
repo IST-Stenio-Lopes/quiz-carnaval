@@ -3,73 +3,17 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "../components/ui/button";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Maximize } from "lucide-react";
 import confetti from "canvas-confetti";
 
 export default function Page() {
-  const router = useRouter();
+  const router = useRouter()
+
   const [showPreparationScreen, setShowPreparationScreen] = useState(false);
-  const [confettiIntervalId, setConfettiIntervalId] =
-    useState<NodeJS.Timeout | null>(null);
-
-  function showConfetti() {
-    const duration = 2 * 1000;
-    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
-    const randomInRange = (min: number, max: number) =>
-      Math.random() * (max - min) + min;
-
-    const interval = setInterval(() => {
-      const animationEnd = Date.now() + duration;
-
-      const confettiInterval = setInterval(() => {
-        const timeLeft = animationEnd - Date.now();
-
-        if (timeLeft <= 0) {
-          return clearInterval(confettiInterval);
-        }
-
-        const particleCount = 50 * (timeLeft / duration);
-        confetti({
-          ...defaults,
-          particleCount,
-          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-        });
-        confetti({
-          ...defaults,
-          particleCount,
-          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-        });
-      }, 250);
-    }, duration);
-
-    return interval;
-  }
-
-  useEffect(() => {
-    if (!showPreparationScreen) {
-      const intervalId = showConfetti();
-      setConfettiIntervalId(intervalId);
-    }
-
-    return () => {
-      if (confettiIntervalId) {
-        clearInterval(confettiIntervalId);
-        setConfettiIntervalId(null);
-      }
-    };
-  }, [showPreparationScreen]);
-
-  function stopConfetti() {
-    if (confettiIntervalId) {
-      clearInterval(confettiIntervalId);
-      setConfettiIntervalId(null);
-    }
-  }
+ 
 
   function handlePreparationScreen() {
-    stopConfetti();
     setShowPreparationScreen(true);
   }
 
@@ -78,7 +22,6 @@ export default function Page() {
   }
 
   function handleStartQuiz() {
-    stopConfetti();
     router.push("/quiz");
   }
 
@@ -87,6 +30,18 @@ export default function Page() {
       document.documentElement.requestFullscreen();
     }
   }
+
+  useEffect(() => {
+    const disableRightClick = (event: MouseEvent) => {
+      event.preventDefault();
+    };
+  
+    document.addEventListener("contextmenu", disableRightClick);
+  
+    return () => {
+      document.removeEventListener("contextmenu", disableRightClick);
+    };
+  }, []);
 
   if (!showPreparationScreen) {
     return (
