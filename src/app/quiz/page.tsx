@@ -321,9 +321,10 @@ export default function Quiz() {
                 <Label
                     htmlFor={`q${currentQuestion.id}-option${optionIndex}`}
                     className="text-white text-3xl w-full"
+                    key={`label-${optionIndex}`} 
                   >
                 <div
-                  key={optionIndex}
+                  key={`option-${optionIndex}`} 
                   onClick={playClickSound}
                   className={`flex items-center p-12 bg-button-answer rounded-md shadow-elevationfour transition-opacity duration-300 ${
                     currentQuestion.options.some((option) => "image" in option)

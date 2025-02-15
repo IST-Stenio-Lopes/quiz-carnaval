@@ -5,12 +5,13 @@ import Image from "next/image";
 import { Button } from "../components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import { Maximize } from "lucide-react";
-import confetti from "canvas-confetti";
+import { AutoConfetti } from "../components/auto-confetti";
 
 export default function Page() {
-  const router = useRouter()
-
+  const router = useRouter();
+  const pathname = usePathname();
   const [showPreparationScreen, setShowPreparationScreen] = useState(false);
+  const [isConfettiActive, setIsConfettiActive] = useState(true);
  
 
   function handlePreparationScreen() {
@@ -19,9 +20,11 @@ export default function Page() {
 
   function backStart() {
     setShowPreparationScreen(false);
+    setIsConfettiActive(true)
   }
 
   function handleStartQuiz() {
+    setIsConfettiActive(false);
     router.push("/quiz");
   }
 
@@ -43,9 +46,19 @@ export default function Page() {
     };
   }, []);
 
+  useEffect(() => {
+    
+    if (pathname === "/quiz") {
+      setIsConfettiActive(false);
+    } else {
+      setIsConfettiActive(true);
+    }
+  }, [pathname]);
+
   if (!showPreparationScreen) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-carnaval-bg bg-cover bg-center p-24 w-full">
+        <AutoConfetti isActive={isConfettiActive} />
         <Button
           onClick={goFullscreen}
           className="absolute top-6 right-6 bg-black bg-opacity-50 text-white p-3 rounded-full shadow-md hover:bg-opacity-70 transition z-10"
@@ -86,6 +99,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-carnaval-bg bg-cover bg-center w-full p-12">
+      <AutoConfetti isActive={isConfettiActive} />
       <div className="bg-zinc-200 p-12 flex flex-col gap-4 rounded-t-3xl justify-center items-center w-full shadow-elevationcard">
         <Image
           src="/logoblack.svg"
